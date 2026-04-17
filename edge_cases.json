@@ -1,0 +1,9 @@
+[
+    {"name": "Neha", "rating": "Five", "feedback": "Loved it", "age": "24"},
+    {"name": "Rohit", "rating": " ", "feedback": "No comments", "age": "29"},
+    {"name": "Pooja", "feedback": "Okay"},
+    {"name": "Neha", "rating": "4.0", "feedback": "Second purchase", "age": "24"},
+    {"name": "Varun", "rating": "three", "feedback": "Decent", "age": "31"},
+    {"name": "Isha", "rating": "6", "feedback": "Fake rating", "age": "20"},
+    {"name": "Mohit", "rating": "2.5", "feedback": "Slow performance", "age": "27"}
+]

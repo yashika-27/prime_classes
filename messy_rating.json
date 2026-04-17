@@ -1,0 +1,10 @@
+[
+    {"name": "Rahul", "rating": "five", "feedback": "Excellent phone", "age": "26"},
+    {"name": "Anita", "rating": "4", "feedback": "Good but costly", "age": "23"},
+    {"name": "Karan", "rating": "two", "feedback": "Battery issue"},
+    {"name": "Megha", "rating": "3.5", "feedback": "Average experience", "age": "28"},
+    {"name": "Rahul", "rating": "5 ", "feedback": "Bought again", "age": "26"},
+    {"name": "Aman", "rating": "one", "feedback": "Worst delivery", "age": "30"},
+    {"name": "Simran", "rating": "4 ", "feedback": "Camera is good", "age": "22"},
+    {"name": "Karan", "rating": "2", "feedback": "Still heating", "age": "27"}
+]

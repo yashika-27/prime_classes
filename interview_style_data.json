@@ -1,0 +1,8 @@
+ [
+    {"name": "User1", "rating": "4", "category": "Mobile", "price": "70000"},
+    {"name": "User2", "rating": "3", "category": "Laptop", "price": "85000"},
+    {"name": "User3", "rating": "five", "category": "Mobile", "price": "45000"},
+    {"name": "User4", "rating": "2", "category": "Tablet", "price": "30000"},
+    {"name": "User5", "rating": "4.5", "category": "Mobile", "price": "90000"},
+    {"name": "User1", "rating": "4", "category": "Mobile", "price": "70000"}
+]
