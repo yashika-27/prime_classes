@@ -22,50 +22,25 @@ The billing team manually:
 - Identifies root causes
 - Decides whether to appeal
 
-This process is:
+This process is time-consuming and error-prone.
 
-- Time-consuming
-- Error-prone
-- Inefficient
-
-👉 This project automates that decision-making process.
-
----
-
-## 📂 Dataset
-
-### 🔹 837 (Hospital side)
-
-Contains:
-
-- Claim details
-- Diagnosis
-- Procedure
-- Prior authorization
-
-### 🔹 835 (Insurance side)
-
-Contains:
-
-- Claim status (paid/denied)
-- CARC codes (denial reasons)
-- Adjustment amount
+👉 This system automates and improves that decision-making.
 
 ---
 
 ## ⚙️ System Architecture
 
-### 1️⃣ Data Preparation
+### 1. Data Preparation
 
-- Merged 837 and 835 datasets
+- Merged 835 and 837 datasets
 - Created unified claim-level dataset
-- Handled missing values and formatting issues
+- Generated synthetic dataset (30 claims)
 
 ---
 
-### 2️⃣ Rule-Based Engine (Core Logic)
+### 2. Rule-Based Engine
 
-Each claim is analyzed based on CARC codes:
+Each claim is analyzed using CARC codes:
 
 | CARC | Meaning           | Logic                            |
 | ---- | ----------------- | -------------------------------- |
@@ -74,21 +49,12 @@ Each claim is analyzed based on CARC codes:
 | 18   | Duplicate         | Compare similar claims           |
 | 50   | Medical Necessity | Flag for review                  |
 
----
-
-### 🔍 Key Insight
-
-> The system does NOT blindly trust CARC codes — it validates them.
-
-Example:
-
-- If claim is within filing limit but marked late → **Recoverable**
+🔍 **Key Insight:**
+The system does not blindly trust CARC codes — it validates them using logic.
 
 ---
 
-### 3️⃣ Structured Output
-
-Each claim produces:
+### 3. Structured Output
 
 ```json
 {
@@ -103,11 +69,11 @@ Each claim produces:
 
 ---
 
-## 📊 Pattern Analysis (Day 2)
+## 📊 Pattern Analysis
 
-### ❗ Initial Issue Discovered
+### ❗ Issue Identified
 
-Grouping by:
+Initial grouping using:
 
 ```
 payer + procedure + CARC
@@ -119,15 +85,15 @@ resulted in:
 denial_rate = 1.0 (always)
 ```
 
-### 🔥 Fix
+### 🔥 Fix Applied
 
-Removed CARC from grouping:
+Changed grouping to:
 
-```python
-groupby(['cp_PayerName', 'cd_ProcedureCode'])
+```
+payer + procedure
 ```
 
-### ✅ Final Denial Rate
+### ✅ Final Formula
 
 ```
 denial_rate = denied / total claims
@@ -135,99 +101,98 @@ denial_rate = denied / total claims
 
 ---
 
-### 💡 How Patterns Help
+### 💡 Interpretation
 
-| Denial Rate | Interpretation                   |
-| ----------- | -------------------------------- |
-| < 0.3       | Rare denial → likely recoverable |
-| 0.3–0.7     | Uncertain → review               |
-| > 0.7       | Common denial → likely valid     |
+| Denial Rate | Meaning                           |
+| ----------- | --------------------------------- |
+| < 0.3       | Rare denial → Recoverable         |
+| 0.3–0.7     | Uncertain → Needs Review          |
+| > 0.7       | Frequent denial → Not Recoverable |
 
 ---
 
 ### 🚀 Impact
 
 - Reduced "Needs Review"
-- Added data-driven decisions
-- Improved system intelligence
+- Added data-driven reasoning
+- Improved decision quality
 
 ---
 
-## 🔬 Clustering (Day 3)
+## 🔬 Clustering (Prioritization)
 
 Used KMeans on:
 
 - Adjustment Amount
 - Denial Rate
 
-### 📌 Purpose
+### 🎯 Purpose
 
-Group claims for prioritization
+Group claims to prioritize recovery efforts.
 
 ---
 
 ### 📊 Cluster Insights
 
-| Cluster                     | Meaning                  |
-| --------------------------- | ------------------------ |
-| High denial + medium amount | Likely not recoverable   |
-| Low amount + low denial     | Low priority             |
-| High amount + medium denial | 🔥 Best recovery targets |
+| Cluster Type               | Meaning                  |
+| -------------------------- | ------------------------ |
+| High denial rate           | Likely not recoverable   |
+| Low value claims           | Low priority             |
+| High value + medium denial | 🔥 Best recovery targets |
 
 ---
 
-### ⚠️ Important Learning
+### 🔍 Key Insight
 
-> Clustering does not give business meaning — we must interpret it.
-
----
-
-### ✅ Final Labeling
-
-```python
-High Value + Medium Risk → Focus
-High Risk → Avoid
-Low Value → Low Priority
-```
+Clustering does not assign business meaning automatically.
+We interpret clusters using domain logic.
 
 ---
 
-## 🤖 Why Not Pure ML?
+## 📈 Evaluation
 
-### ❌ Not used initially because:
-
-- Small dataset
-- Need for explainability
-- Strong rule-based nature
-
-### ✅ Future Extension:
-
-- Predict recoverability using ML
-- Add NLP for diagnosis/procedure
-- Improve confidence scoring
+- Verified denial rate variation after fixing grouping issue
+- Compared outputs before and after pattern analysis
+- Validated decisions logically using sample claims
 
 ---
 
-## 🧠 Key Learnings
+## 🔁 Iteration
 
-- Never trust labels blindly (CARC validation)
-- Avoid over-granular grouping in patterns
-- Separate logic, scoring, and output
-- Combine rules + patterns for best results
-- Clustering needs interpretation
+Initial Issue:
 
----
+- Denial rate always 1.0 due to incorrect grouping
 
-## 🚀 Business Value
+Fix:
 
-- Automates claim review
-- Reduces manual effort
-- Improves recovery rate
-- Prioritizes high-value claims
+- Removed CARC from grouping
+
+Impact:
+
+- Enabled meaningful pattern insights
+- Improved recoverability decisions
 
 ---
 
-## 📌 Tech Stack
+## ⚠️ Limitations
+
+- Synthetic dataset (limited size)
+- Medical necessity logic simplified
+- Duplicate detection is heuristic-based
+- No ML model used (can be added in future)
+
+---
+
+## 🚀 Future Improvements
+
+- Add ML model for recoverability prediction
+- Use NLP for diagnosis/procedure analysis
+- Build dashboard (Power BI / Streamlit)
+- Integrate real-world datasets
+
+---
+
+## 🧰 Tech Stack
 
 - Python
 - Pandas
@@ -238,22 +203,13 @@ Low Value → Low Priority
 
 ## 🏁 Conclusion
 
-This project demonstrates a **hybrid decision system** combining:
+This project demonstrates a hybrid system combining:
 
 - Rule-based validation
-- Data-driven insights
-- Intelligent prioritization
+- Pattern-based reasoning
+- Cluster-based prioritization
 
-👉 Designed for real-world healthcare claim processing scenarios.
-
----
-
-## 📎 Future Improvements
-
-- Add ML prediction model
-- Integrate real claim datasets
-- Build dashboard (Power BI / Streamlit)
-- Add API layer
+👉 Designed for real-world healthcare claim processing.
 
 ---
 
